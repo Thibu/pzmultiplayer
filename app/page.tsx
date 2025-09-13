@@ -3,7 +3,6 @@ import { Home } from "./modules/home/components/Home";
 
 const HomePage = async () => {
   const steamNews = await fetchSteamNews()
-  console.log(steamNews)
   return (
     <Home steamNews={steamNews} />
   )

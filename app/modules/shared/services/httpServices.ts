@@ -56,7 +56,7 @@ api.interceptors.request.use((config) => {
 
 function normalizeError(error: unknown): ApiError {
   if (axios.isAxiosError(error)) {
-    const axiosErr = error as AxiosError<any>;
+    const axiosErr = error as AxiosError<{message?: string; error?: string}>;
     const status = axiosErr.response?.status;
     const code = axiosErr.code;
     const message =
