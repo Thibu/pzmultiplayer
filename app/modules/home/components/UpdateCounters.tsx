@@ -12,8 +12,10 @@ interface UpdateCountersProps {
 
 const Stat = ({ value, label }: { value: number; label: string }) => (
   <div className="flex flex-col items-center">
-    <div className="text-2xl font-semibold tabular-nums">{value.toString().padStart(2, '0')}</div>
-    <div className="text-xs text-muted-foreground">{label}</div>
+    <div className="text-4xl md:text-5xl font-bold tabular-nums drop-shadow-md">
+      {value.toString().padStart(2, '0')}
+    </div>
+    <div className="text-sm md:text-base">{label}</div>
   </div>
 )
 
@@ -42,39 +44,37 @@ export const UpdateCounters: React.FC<UpdateCountersProps> = ({ steamNews }) => 
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <Card className="bg-primary text-primary-foreground border-transparent">
+      <Card className="bg-primary text-primary-foreground border-transparent shadow-xl">
         <CardHeader>
-          <CardTitle>Depuis la dernière mise à jour</CardTitle>
-          <CardDescription className="text-primary-foreground/80">Actualisé chaque seconde</CardDescription>
+          <CardTitle className="text-xl md:text-2xl">Since the latest update</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-primary-foreground/10 rounded-xl px-4 py-3 flex items-center justify-between">
-            <Stat value={latestBreakdown?.days ?? 0} label="Jours" />
-            <Stat value={latestBreakdown?.hours ?? 0} label="Heures" />
+          <div className="bg-primary-foreground/10 rounded-xl px-6 py-5 flex items-center justify-between">
+            <Stat value={latestBreakdown?.days ?? 0} label="Days" />
+            <Stat value={latestBreakdown?.hours ?? 0} label="Hours" />
             <Stat value={latestBreakdown?.minutes ?? 0} label="Minutes" />
-            <Stat value={latestBreakdown?.seconds ?? 0} label="Secondes" />
+            <Stat value={latestBreakdown?.seconds ?? 0} label="Seconds" />
           </div>
           <p className="text-primary-foreground/90 text-sm">
             {latestUpdateDate
-              ? `Dernière actu: ${latestUpdateDate.toLocaleString('fr-FR')}`
-              : "Aucune date trouvée"}
+              ? `Last news: ${latestUpdateDate.toLocaleString('en-US')}`
+              : "No date found"}
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Depuis la news sélectionnée</CardTitle>
-          <CardDescription>Référence: {manualDate ? manualDate.toLocaleDateString('fr-FR') : 'Aucune sélection'}</CardDescription>
+          <CardTitle className="text-xl md:text-2xl">Since the release of version BETA 42 and NO MULTIPLAYER</CardTitle>
+          <CardDescription>Release date: {manualDate ? manualDate.toLocaleDateString('en-US') : 'None selected'}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-muted rounded-xl px-4 py-3 flex items-center justify-between">
-            <Stat value={manualBreakdown?.days ?? 0} label="Jours" />
-            <Stat value={manualBreakdown?.hours ?? 0} label="Heures" />
+          <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between">
+            <Stat value={manualBreakdown?.days ?? 0} label="Days" />
+            <Stat value={manualBreakdown?.hours ?? 0} label="Hours" />
             <Stat value={manualBreakdown?.minutes ?? 0} label="Minutes" />
-            <Stat value={manualBreakdown?.seconds ?? 0} label="Secondes" />
+            <Stat value={manualBreakdown?.seconds ?? 0} label="Seconds" />
           </div>
-          <p className="text-sm text-muted-foreground">Actualisé chaque seconde</p>
         </CardContent>
       </Card>
     </div>

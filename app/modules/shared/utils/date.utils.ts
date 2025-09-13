@@ -1,6 +1,6 @@
 export const formatNewsDate = (unixSeconds: number) => {
     const date = new Date(unixSeconds * 1000)
-    return new Intl.DateTimeFormat('fr-FR', {
+    return new Intl.DateTimeFormat('en-US', {
       dateStyle: 'long',
       timeStyle: 'short'
     }).format(date)
@@ -22,5 +22,5 @@ export const getSinceNowBreakdown = (since: Date) => {
 }
 
 export const formatPlural = (value: number, unit: string) => {
-  return new Intl.NumberFormat('fr-FR').format(value) + ' ' + (value > 1 ? unit + 's' : unit)
+  return new Intl.NumberFormat('en-US').format(value) + ' ' + (value !== 1 ? unit + 's' : unit)
 }
