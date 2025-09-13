@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PZ Count Up",
-  description: "PZ Count Up",
+  title: "PZ Count",
+  description: "PZ Count",
 };
 
 export default function RootLayout({
