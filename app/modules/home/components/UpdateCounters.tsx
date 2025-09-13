@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/modules/shared/components/shadcn/card'
 import { SteamAppNewsResponse } from '../interfaces/steamData.interface'
-import { getDurationBreakdown } from '@/app/modules/shared/utils/date.utils'
+import { formatNewsDate, getDurationBreakdown } from '@/app/modules/shared/utils/date.utils'
 import { MANUAL_NEWS_GID } from '@/app/modules/home/config'
 
 interface UpdateCountersProps {
@@ -57,7 +57,7 @@ export const UpdateCounters: React.FC<UpdateCountersProps> = ({ steamNews }) => 
           </div>
           <p className="text-primary-foreground/90 text-sm">
             {latestUpdateDate
-              ? `Last news: ${latestUpdateDate.toLocaleString('en-US')}`
+              ? `Last news: ${formatNewsDate(latestUpdateDate.getTime() / 1000)}`
               : "No date found"}
           </p>
         </CardContent>
@@ -66,7 +66,6 @@ export const UpdateCounters: React.FC<UpdateCountersProps> = ({ steamNews }) => 
       <Card>
         <CardHeader>
           <CardTitle className="text-xl md:text-2xl">Since the release of version BETA 42 and NO MULTIPLAYER</CardTitle>
-          <CardDescription>Release date: {manualDate ? manualDate.toLocaleDateString('en-US') : 'None selected'}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between">
@@ -75,6 +74,11 @@ export const UpdateCounters: React.FC<UpdateCountersProps> = ({ steamNews }) => 
             <Stat value={manualBreakdown?.minutes ?? 0} label="Minutes" />
             <Stat value={manualBreakdown?.seconds ?? 0} label="Seconds" />
           </div>
+          <p className="text-sm">
+            {manualDate
+              ? `Release date: ${formatNewsDate(manualDate.getTime() / 1000)}`
+              : "No date found"}
+          </p>
         </CardContent>
       </Card>
     </div>
