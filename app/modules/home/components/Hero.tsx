@@ -11,7 +11,7 @@ export const Hero = () => {
             backgroundImage: `linear-gradient(90deg, var(--color-primary), ${redColor}, var(--color-primary))`,
           }}
         >
-          PZ Count Up
+          PZ Count
         </span>
       </h1>
       <p className="text-muted-foreground max-w-2xl">
