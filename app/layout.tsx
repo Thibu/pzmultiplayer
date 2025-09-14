@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./theme-provider";
+import PixelBlast from "./modules/shared/components/shadcn/PixelBlast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased container mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased container mx-auto min-h-dvh`}
       >
         <ThemeProvider
           attribute="class"
@@ -34,6 +35,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <div className="fixed inset-0 -z-10">
+            <PixelBlast variant="circle"
+              pixelSize={4}
+              color="#D30F0E"
+              patternScale={3}
+              patternDensity={0.5}
+              pixelSizeJitter={0.5}
+              speed={0.6}
+              edgeFade={0.25}
+              transparent
+              className="w-full h-full pointer-events-none"
+            />
+          </div>
           {children}
         </ThemeProvider>
       </body>

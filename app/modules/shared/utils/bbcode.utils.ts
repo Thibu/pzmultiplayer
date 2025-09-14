@@ -32,8 +32,8 @@ function convertDashListsToBBCode(input: string): string {
 
   for (const raw of lines) {
     const line = raw.trimEnd()
-    if (/^(?:--|-)\s+/.test(line)) {
-      const content = line.replace(/^(?:--|-)\s+/, '')
+    if (/^--\s+/.test(line)) {
+      const content = line.replace(/^--\s+/, '')
       if (!inList) { out.push('[list]'); inList = true }
       out.push(`[*]${content}`)
       continue
@@ -53,6 +53,8 @@ export function preprocessSteamBBCode(raw: string): string {
   text = stripExpandTags(text)
   text = normalizeImgTags(text)
   text = convertDashListsToBBCode(text)
+  // Collapse excessive blank lines to at most two
+  text = text.replace(/\n{3,}/g, '\n\n')
   return text
 }
 

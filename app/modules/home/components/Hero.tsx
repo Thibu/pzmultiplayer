@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const Hero = () => {
-  const redColor = '#D30F0E'
+  const redColor = '#D10F0E'
   return (
     <section className="relative flex flex-col items-center text-center gap-6 pt-6 md:pt-12 pb-4">
       <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight">
