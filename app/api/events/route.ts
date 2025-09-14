@@ -3,37 +3,60 @@ import { registerClient, unregisterClient } from "@/app/modules/shared/lib/sseBu
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
+  let doClose: (() => void) | null = null;
+
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
       const encoder = new TextEncoder();
-      const enqueue = (chunk: string) => controller.enqueue(encoder.encode(chunk));
-      const client = registerClient(enqueue);
-      // eslint-disable-next-line no-console
+      let isClosed = false;
+
+      const safeEnqueue = (chunk: string) => {
+        if (isClosed) return;
+        try {
+          controller.enqueue(encoder.encode(chunk));
+        } catch {
+          // Stream is likely closed; ensure cleanup
+          if (doClose) doClose();
+        }
+      };
+
+      const client = registerClient(safeEnqueue);
       console.log(`[SSE] client ${client.id} connected`)
-      // Send a comment to open the stream
-      enqueue(": connected\n\n");
+
+      // Open the stream with a comment
+      safeEnqueue(": connected\n\n");
 
       // Heartbeat to keep connections alive
-      const pingId = setInterval(() => enqueue(`event: ping\n\n`), 25000);
+      const pingId = setInterval(() => {
+        safeEnqueue(`event: ping\n\n`);
+      }, 25000);
 
-      // Close hook
       const close = () => {
+        if (isClosed) return;
+        isClosed = true;
         clearInterval(pingId);
         unregisterClient(client);
-        // eslint-disable-next-line no-console
         console.log(`[SSE] client ${client.id} disconnected`)
         try { controller.close(); } catch {}
       };
 
-      // Abort support
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const signal: AbortSignal | undefined = (controller as any).signal;
-      if (signal) {
-        signal.addEventListener("abort", close);
-      }
+      // Expose close for external cancellation
+      doClose = close;
+    },
+
+    cancel() {
+      // Called when the consumer (client) closes the connection
+      if (doClose) doClose();
     },
   });
+
+  // Also listen to the request's abort signal (Node/Next provides this)
+  try {
+    request.signal.addEventListener("abort", () => {
+      if (doClose) doClose();
+    });
+  } catch {}
 
   return new NextResponse(stream, {
     headers: {
