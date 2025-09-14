@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { fetchSteamNews } from "./modules/home/services/home.services";
 import { Home } from "./modules/home/components/Home";
 

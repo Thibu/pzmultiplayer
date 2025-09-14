@@ -23,9 +23,18 @@ export const isApiError = (error: unknown): error is ApiError => {
 };
 
 // Base URL is configurable via environment variable for flexibility across envs
-const baseURL: string =
-  (typeof process !== "undefined" &&
-    process.env.NEXT_PUBLIC_API_BASE_URL) || "/api";
+// In SSR/Node, Axios needs an absolute URL (protocol + host). On the browser, relative works.
+function resolveBaseURL(): string {
+  const isServer = typeof window === "undefined";
+  if (isServer) {
+    const appBase = process.env.NEXT_PUBLIC_APP_BASE_URL || "http://localhost:3000";
+    const trimmed = appBase.replace(/\/$/, "");
+    return `${trimmed}/api`;
+  }
+  return "/api";
+}
+
+const baseURL: string = resolveBaseURL();
 
 const api: AxiosInstance = axios.create({
   baseURL,

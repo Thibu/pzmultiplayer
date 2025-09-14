@@ -1,0 +1,24 @@
+name: Revalidate Steam News
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # every 30 minutes
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call revalidate endpoint
+        env:
+          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+        run: |
+          if [ -z "$APP_BASE_URL" ] || [ -z "$REVALIDATE_SECRET" ]; then
+            echo "Missing APP_BASE_URL or REVALIDATE_SECRET secrets" >&2
+            exit 1
+          fi
+          curl -fsS -X POST "$APP_BASE_URL/api/revalidate/steam-news" \
+            -H "Authorization: Bearer $REVALIDATE_SECRET" \
+            -H "Content-Length: 0"
+
