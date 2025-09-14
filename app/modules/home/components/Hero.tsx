@@ -1,19 +1,23 @@
 import React from 'react'
+import Shuffle from '../../shared/components/shadcn/Shuffle'
 
 export const Hero = () => {
-  const redColor = '#D10F0E'
   return (
     <section className="relative flex flex-col items-center text-center gap-6 pt-6 md:pt-12 pb-4">
-      <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight">
-        <span
-          className="animated-gradient-text bg-clip-text text-transparent"
-          style={{
-            backgroundImage: `linear-gradient(90deg, var(--color-primary), ${redColor}, var(--color-primary))`,
-          }}
-        >
-          PZ Count
-        </span>
-      </h1>
+      <Shuffle 
+        text="PZ Count"
+        shuffleDirection="right"
+        duration={0.35}
+        animationMode="evenodd"
+        shuffleTimes={1}
+        ease="power3.out"
+        stagger={0.03}
+        threshold={0.1}
+        triggerOnce={true}
+        triggerOnHover={true}
+        respectReducedMotion={true}
+        className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight"
+      />
       <p className="text-muted-foreground max-w-2xl">
         Track the time since the latest Project Zomboid update.
       </p>

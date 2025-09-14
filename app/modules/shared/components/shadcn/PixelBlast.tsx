@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useEffect, useRef } from 'react';
@@ -37,7 +38,7 @@ const createTouchTexture = () => {
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('2D context not available');
+    if (!ctx) throw new Error('2D context not available');
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   const texture = new THREE.Texture(canvas);
