@@ -3,16 +3,20 @@
 import React from 'react'
 import { formatNewsDate } from '../../shared/utils/date.utils'
 import { preprocessSteamBBCode } from '../../shared/utils/bbcode.utils'
-import { NewsItem, SteamAppNewsResponse } from '../interfaces/steamData.interface'
+import { NewsItem } from '../interfaces/steamData.interface'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/app/modules/shared/components/shadcn/accordion'
 import BBCode from '@bbob/react'
 import reactPreset from '@bbob/preset-react'
+import { useQuery } from '@tanstack/react-query'
+import { fetchSteamNews } from '@/app/modules/home/services/home.services'
 
-interface NewsContentProps {
-  steamNews: SteamAppNewsResponse
-}
+export const NewsContent = () => {
+  const { data: steamNews } = useQuery({
+    queryKey: ['steamNews'],
+    queryFn: fetchSteamNews,
+  })
 
-export const NewsContent = ({ steamNews }: NewsContentProps) => {
+  if (!steamNews) return null
   return (
     <Accordion type="single" collapsible className='w-full space-y-3'>
       {steamNews.appnews.newsitems.map((news: NewsItem) => (

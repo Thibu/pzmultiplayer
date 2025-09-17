@@ -2,11 +2,19 @@ export const dynamic = 'force-dynamic'
 
 import { fetchSteamNews } from "./modules/home/services/home.services";
 import { Home } from "./modules/home/components/Home";
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
 const HomePage = async () => {
-  const steamNews = await fetchSteamNews()
+  const queryClient = new QueryClient()
+  await queryClient.prefetchQuery({
+    queryKey: ['steamNews'],
+    queryFn: fetchSteamNews,
+  })
+  const state = dehydrate(queryClient)
   return (
-    <Home steamNews={steamNews} />
+    <HydrationBoundary state={state}>
+      <Home />
+    </HydrationBoundary>
   )
 }
 

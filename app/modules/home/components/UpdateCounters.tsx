@@ -1,14 +1,12 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/modules/shared/components/shadcn/card'
-import { SteamAppNewsResponse } from '../interfaces/steamData.interface'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/modules/shared/components/shadcn/card'
+// removed unused SteamAppNewsResponse import
 import { formatNewsDate, getDurationBreakdown } from '@/app/modules/shared/utils/date.utils'
 import { MANUAL_NEWS_GID } from '@/app/modules/home/config'
-
-interface UpdateCountersProps {
-  steamNews: SteamAppNewsResponse
-}
+import { useQuery } from '@tanstack/react-query'
+import { fetchSteamNews } from '@/app/modules/home/services/home.services'
 
 const Stat = ({ value, label }: { value: number; label: string }) => (
   <div className="flex flex-col items-center">
@@ -19,15 +17,20 @@ const Stat = ({ value, label }: { value: number; label: string }) => (
   </div>
 )
 
-export const UpdateCounters: React.FC<UpdateCountersProps> = ({ steamNews }) => {
+export const UpdateCounters = () => {
+  const { data: steamNews } = useQuery({
+    queryKey: ['steamNews'],
+    queryFn: fetchSteamNews,
+    refetchInterval: 60_000,
+  })
   const latestUpdateDate = useMemo(() => {
-    const latest = steamNews.appnews.newsitems[0]?.date
+    const latest = steamNews?.appnews.newsitems[0]?.date
     return latest ? new Date(latest * 1000) : null
   }, [steamNews])
 
   const manualDate = useMemo(() => {
     const trimmedGid = (MANUAL_NEWS_GID || '').trim()
-    if (!trimmedGid) return null
+    if (!trimmedGid || !steamNews) return null
     const match = steamNews.appnews.newsitems.find(n => String(n.gid) === trimmedGid)
     return match?.date ? new Date(match.date * 1000) : null
   }, [steamNews])
@@ -38,6 +41,8 @@ export const UpdateCounters: React.FC<UpdateCountersProps> = ({ steamNews }) => 
     const id = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(id)
   }, [])
+
+  if (!steamNews) return null
 
   const latestBreakdown = latestUpdateDate ? getDurationBreakdown(latestUpdateDate, now) : null
   const manualBreakdown = manualDate ? getDurationBreakdown(manualDate, now) : null
