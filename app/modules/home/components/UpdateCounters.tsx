@@ -97,6 +97,9 @@ export const UpdateCounters = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between">
+              {((manualBreakdown?.years ?? 0) > 0) && (
+                <Stat value={manualBreakdown?.years ?? 0} label="Years" />
+              )}
               <Stat value={manualBreakdown?.days ?? 0} label="Days" />
               <Stat value={manualBreakdown?.hours ?? 0} label="Hours" />
               <Stat value={manualBreakdown?.minutes ?? 0} label="Minutes" />
@@ -118,6 +121,7 @@ export const UpdateCounters = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between">
+            <Stat value={earlyAccessBreakdown?.years ?? 0} label="Years" />
             <Stat value={earlyAccessBreakdown?.days ?? 0} label="Days" />
             <Stat value={earlyAccessBreakdown?.hours ?? 0} label="Hours" />
             <Stat value={earlyAccessBreakdown?.minutes ?? 0} label="Minutes" />
