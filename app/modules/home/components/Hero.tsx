@@ -3,7 +3,7 @@ import Shuffle from '../../shared/components/shadcn/Shuffle'
 
 export const Hero = () => {
   return (
-    <section className="relative flex flex-col items-center text-center gap-6 pt-6 md:pt-12 pb-4">
+    <section className="relative flex flex-col items-center text-center gap-6 pt-6 md:pt-6 pb-4">
       <Shuffle 
         text="PZ Count"
         shuffleDirection="right"

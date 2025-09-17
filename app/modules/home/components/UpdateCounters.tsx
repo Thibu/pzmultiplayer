@@ -43,11 +43,14 @@ export const UpdateCounters = () => {
     return () => clearInterval(id)
   }, [])
 
+  const earlyAccessDate = useMemo(() => new Date(Date.UTC(2013, 10, 8, 0, 0, 0)), [])
+
   const latestBreakdown = latestUpdateDate ? getDurationBreakdown(latestUpdateDate, now) : null
   const detection = useMemo(() => detectMultiplayerFromNews(steamNews), [steamNews])
   const multiDate = detection.introduced && detection.introducedAt ? detection.introducedAt : null
   const multiBreakdown = multiDate ? getDurationBreakdown(multiDate, now) : null
   const manualBreakdown = manualDate ? getDurationBreakdown(manualDate, now) : null
+  const earlyAccessBreakdown = earlyAccessDate ? getDurationBreakdown(earlyAccessDate, now) : null
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -107,6 +110,24 @@ export const UpdateCounters = () => {
           </CardContent>
         </Card>
       )}
+      <div>
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl md:text-2xl">Since the release of Early Access</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between">
+            <Stat value={earlyAccessBreakdown?.days ?? 0} label="Days" />
+            <Stat value={earlyAccessBreakdown?.hours ?? 0} label="Hours" />
+            <Stat value={earlyAccessBreakdown?.minutes ?? 0} label="Minutes" />
+            <Stat value={earlyAccessBreakdown?.seconds ?? 0} label="Seconds" />
+          </div>
+          <p className="text-sm">
+            Release date: {formatNewsDate(earlyAccessDate.getTime() / 1000, false)}
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

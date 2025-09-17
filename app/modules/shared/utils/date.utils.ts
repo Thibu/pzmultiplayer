@@ -1,9 +1,9 @@
-export const formatNewsDate = (unixSeconds: number) => {
+export const formatNewsDate = (unixSeconds: number, showHours: boolean = true) => {
     const date = new Date(unixSeconds * 1000)
-    return new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'long',
-      timeStyle: 'short'
-    }).format(date)
+    const options: Intl.DateTimeFormatOptions = showHours
+      ? { dateStyle: 'long', timeStyle: 'short' }
+      : { dateStyle: 'long' }
+    return new Intl.DateTimeFormat('en-US', options).format(date)
   }
 
 // Returns a breakdown of the duration between two dates
