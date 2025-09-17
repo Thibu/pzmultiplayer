@@ -1,4 +1,5 @@
 import { NewsItem, SteamAppNewsResponse } from "../interfaces/steamData.interface"
+import { MANUAL_NEWS_GID } from "@/app/modules/home/config"
 import { preprocessSteamBBCode } from "@/app/modules/shared/utils/bbcode.utils"
 
 export interface MultiplayerDetectionResult {
@@ -105,8 +106,19 @@ export function detectMultiplayerFromNews(resp?: SteamAppNewsResponse | null): M
 
   const items = resp.appnews.newsitems
 
+  // Cutoff: ignore news before first Beta 42 release (identified via MANUAL_NEWS_GID)
+  const trimmedGid = (MANUAL_NEWS_GID || '').trim()
+  let filtered = items
+  if (trimmedGid) {
+    const ref = items.find(n => String(n.gid) === trimmedGid)
+    if (ref?.date) {
+      const cutoff = ref.date // unix seconds
+      filtered = items.filter(n => n.date >= cutoff)
+    }
+  }
+
   // Compute scores for all items
-  const scored: Array<{ item: NewsItem; score: number; reasons: string[] }> = items.map(item => {
+  const scored: Array<{ item: NewsItem; score: number; reasons: string[] }> = filtered.map(item => {
     const { score, reasons } = scoreNewsItem(item)
     return { item, score, reasons }
   })

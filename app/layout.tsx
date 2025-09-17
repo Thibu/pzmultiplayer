@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./theme-provider";
 import PixelBlast from "./modules/shared/components/shadcn/PixelBlast";
 import QueryProvider from "./query-provider";
+import { Analytics } from '@vercel/analytics/next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,6 +54,7 @@ export default function RootLayout({
             {children}
           </QueryProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
