@@ -2,32 +2,18 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/modules/shared/components/shadcn/card'
-// removed unused SteamAppNewsResponse import
 import { formatNewsDate, getDurationBreakdown } from '@/app/modules/shared/utils/date.utils'
-import { MANUAL_NEWS_GID } from '@/app/modules/home/config'
-import { useQuery } from '@tanstack/react-query'
-import { fetchSteamNews } from '@/app/modules/home/services/home.services'
-import { detectMultiplayerFromNews } from '@/app/modules/home/services/multiplayerDetection.service'
-
-const Stat = ({ value, label }: { value: number; label: string }) => (
-  <div className="flex flex-col items-center">
-    <div className="text-4xl md:text-5xl font-bold tabular-nums drop-shadow-md">
-      {value.toString().padStart(2, '0')}
-    </div>
-    <div className="text-sm md:text-base">{label}</div>
-  </div>
-)
+import { EARLY_ACCESS_UTC_MS, MANUAL_NEWS_GID } from '@/app/modules/home/config'
+import Stat from '@/app/modules/shared/components/Stat'
+import useSteamNews from '@/app/modules/home/hooks/useSteamNews'
+import CountersSkeleton from './skeleton/CountersSkeleton'
 
 export const UpdateCounters = () => {
-  const { data: steamNews } = useQuery({
-    queryKey: ['steamNews'],
-    queryFn: fetchSteamNews,
-    refetchInterval: 60_000,
-  })
+  const { steamNews, latestUnixSeconds, isPending } = useSteamNews()
+
   const latestUpdateDate = useMemo(() => {
-    const latest = steamNews?.appnews.newsitems[0]?.date
-    return latest ? new Date(latest * 1000) : null
-  }, [steamNews])
+    return latestUnixSeconds ? new Date(latestUnixSeconds * 1000) : null
+  }, [latestUnixSeconds])
 
   const manualDate = useMemo(() => {
     const trimmedGid = (MANUAL_NEWS_GID || '').trim()
@@ -43,14 +29,18 @@ export const UpdateCounters = () => {
     return () => clearInterval(id)
   }, [])
 
-  const earlyAccessDate = useMemo(() => new Date(Date.UTC(2013, 10, 8, 0, 0, 0)), [])
+  const earlyAccessDate = useMemo(() => new Date(EARLY_ACCESS_UTC_MS), [])
 
   const latestBreakdown = latestUpdateDate ? getDurationBreakdown(latestUpdateDate, now) : null
-  const detection = useMemo(() => detectMultiplayerFromNews(steamNews), [steamNews])
-  const multiDate = detection.introduced && detection.introducedAt ? detection.introducedAt : null
-  const multiBreakdown = multiDate ? getDurationBreakdown(multiDate, now) : null
+  // const detection = useMemo(() => detectMultiplayerFromNews(steamNews), [steamNews])
+  // const multiDate = detection.introduced && detection.introducedAt ? detection.introducedAt : null
+  // const multiBreakdown = multiDate ? getDurationBreakdown(multiDate, now) : null
   const manualBreakdown = manualDate ? getDurationBreakdown(manualDate, now) : null
   const earlyAccessBreakdown = earlyAccessDate ? getDurationBreakdown(earlyAccessDate, now) : null
+
+  if (isPending || (latestBreakdown == null )) {
+    return <CountersSkeleton />
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -73,7 +63,7 @@ export const UpdateCounters = () => {
         </CardContent>
       </Card>
 
-      {multiDate ? (
+      {/* {multiDate ? (
         <Card className="border-green-600">
           <CardHeader>
             <CardTitle className="text-xl md:text-2xl">Since multiplayer was added</CardTitle>
@@ -90,7 +80,7 @@ export const UpdateCounters = () => {
             </p>
           </CardContent>
         </Card>
-      ) : (
+      ) : ( */}
         <Card>
           <CardHeader>
             <CardTitle className="text-xl md:text-2xl">Since the release of version BETA 42 and NO MULTIPLAYER</CardTitle>
@@ -112,9 +102,8 @@ export const UpdateCounters = () => {
             </p>
           </CardContent>
         </Card>
-      )}
-      <div>
-      </div>
+      {/* )} */}
+      <div/>
       <Card>
         <CardHeader>
           <CardTitle className="text-xl md:text-2xl">Since the release of Early Access</CardTitle>

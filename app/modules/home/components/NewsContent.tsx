@@ -7,15 +7,13 @@ import { NewsItem } from '../interfaces/steamData.interface'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/app/modules/shared/components/shadcn/accordion'
 import BBCode from '@bbob/react'
 import reactPreset from '@bbob/preset-react'
-import { useQuery } from '@tanstack/react-query'
-import { fetchSteamNews } from '@/app/modules/home/services/home.services'
+import useSteamNews from '../hooks/useSteamNews'
+import NewsSkeleton from './skeleton/NewsSkeleton'
 
 export const NewsContent = () => {
-  const { data: steamNews } = useQuery({
-    queryKey: ['steamNews'],
-    queryFn: fetchSteamNews,
-  })
+  const { steamNews, isPending } = useSteamNews()
 
+  if (isPending) return <NewsSkeleton />
   if (!steamNews) return null
   return (
     <Accordion type="single" collapsible className='w-full space-y-3'>
