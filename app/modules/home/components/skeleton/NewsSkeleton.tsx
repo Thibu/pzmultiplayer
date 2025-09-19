@@ -1,7 +1,6 @@
 "use client"
 
 import React from 'react'
-import { Accordion } from '@/app/modules/shared/components/shadcn/accordion'
 import { Skeleton } from '@/app/modules/shared/components/shadcn/skeleton'
 
 export const NewsSkeleton: React.FC = () => {
