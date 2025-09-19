@@ -27,11 +27,13 @@ export const useSteamNews = () => {
     }
   }, [steamNews, latestUnixSeconds])
 
-  const { data: latestHead } = useQuery({
+  const HEAD_REFETCH_INTERVAL_MS = 300_000
+
+  const { data: latestHead, dataUpdatedAt: latestHeadUpdatedAt } = useQuery({
     queryKey: ['steamNews', 'head'],
     queryFn: fetchLatestSteamNews,
-    refetchInterval: 60_000,
-    refetchOnWindowFocus: false,
+    refetchInterval: HEAD_REFETCH_INTERVAL_MS,
+    refetchOnWindowFocus: true,
     refetchOnReconnect: false,
     enabled: !!steamNews,
   })
@@ -60,7 +62,11 @@ export const useSteamNews = () => {
     }
   }, [latestHead, latestUnixSeconds, queryClient])
 
-  return { steamNews, latestUnixSeconds, isPending, isFetching }
+  const nextHeadRefetchAtMs = (latestHeadUpdatedAt && latestHeadUpdatedAt > 0
+    ? latestHeadUpdatedAt
+    : Date.now()) + HEAD_REFETCH_INTERVAL_MS
+
+  return { steamNews, latestUnixSeconds, isPending, isFetching, nextHeadRefetchAtMs }
 }
 
 export default useSteamNews

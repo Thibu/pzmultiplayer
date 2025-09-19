@@ -9,7 +9,7 @@ import useSteamNews from '@/app/modules/home/hooks/useSteamNews'
 import CountersSkeleton from './skeleton/CountersSkeleton'
 
 export const UpdateCounters = () => {
-  const { steamNews, latestUnixSeconds, isPending } = useSteamNews()
+  const { steamNews, latestUnixSeconds, isPending, nextHeadRefetchAtMs } = useSteamNews()
 
   const latestUpdateDate = useMemo(() => {
     return latestUnixSeconds ? new Date(latestUnixSeconds * 1000) : null
@@ -32,6 +32,10 @@ export const UpdateCounters = () => {
   const earlyAccessDate = useMemo(() => new Date(EARLY_ACCESS_UTC_MS), [])
 
   const latestBreakdown = latestUpdateDate ? getDurationBreakdown(latestUpdateDate, now) : null
+  const nextRefetchRemainingMs = Math.max(0, (nextHeadRefetchAtMs ?? Date.now()) - now.getTime())
+  const nextRefetchTotalSeconds = Math.floor(nextRefetchRemainingMs / 1000)
+  const nextRefetchMinutes = Math.floor(nextRefetchTotalSeconds / 60)
+  const nextRefetchSeconds = nextRefetchTotalSeconds % 60
   // const detection = useMemo(() => detectMultiplayerFromNews(steamNews), [steamNews])
   // const multiDate = detection.introduced && detection.introducedAt ? detection.introducedAt : null
   // const multiBreakdown = multiDate ? getDurationBreakdown(multiDate, now) : null
@@ -55,11 +59,14 @@ export const UpdateCounters = () => {
             <Stat value={latestBreakdown?.minutes ?? 0} label="Minutes" />
             <Stat value={latestBreakdown?.seconds ?? 0} label="Seconds" />
           </div>
-          <p className="text-primary-foreground/90 text-sm">
-            {latestUpdateDate
-              ? `Last news: ${formatNewsDate(latestUpdateDate.getTime() / 1000)}`
-              : "No date found"}
-          </p>
+          <div className="flex justify-between">
+            <p className="text-primary-foreground/90 text-sm">
+              {latestUpdateDate
+                ? `Last news: ${formatNewsDate(latestUpdateDate.getTime() / 1000)}`
+                : "No date found"}
+            </p>
+            <p className="text-primary-foreground/90 text-sm">Next check in {String(nextRefetchMinutes).padStart(2, '0')}:{String(nextRefetchSeconds).padStart(2, '0')}</p>
+          </div>
         </CardContent>
       </Card>
 
