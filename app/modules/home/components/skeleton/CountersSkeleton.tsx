@@ -40,7 +40,22 @@ export const CountersSkeleton: React.FC = () => {
           <Skeleton className="h-4 w-48" />
         </CardContent>
       </Card>
-      <div/>
+      <Card className=" border-primary shadow-xl">
+        <CardHeader>
+          <CardTitle className="text-xl md:text-2xl">
+            <Skeleton className="h-6 w-72" />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-muted rounded-xl px-6 py-8 flex items-center justify-between">
+            <Skeleton className="h-14 w-16" />
+            <Skeleton className="h-14 w-16" />
+            <Skeleton className="h-14 w-16" />
+            <Skeleton className="h-14 w-16" />
+          </div>
+          <Skeleton className="h-4 w-40" />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle className="text-xl md:text-2xl">

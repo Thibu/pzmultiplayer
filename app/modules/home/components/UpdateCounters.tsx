@@ -22,6 +22,27 @@ export const UpdateCounters = () => {
     return match?.date ? new Date(match.date * 1000) : null
   }, [steamNews])
 
+  const latestBuildInfo = useMemo(() => {
+    if (!steamNews) return null
+    // Prefer dotted versions like 41.78.16 or 50.2.1; fallback to 2-digit 4x/5x
+    const dottedVersionRegex = /\b(?:4\d|5\d)(?:\.\d+){1,3}\b/
+    const shortVersionRegex = /\b(?:4\d|5\d)\b/
+    for (const item of steamNews.appnews.newsitems) {
+      const haystack = `${item.title ?? ''}\n${item.contents ?? ''}`
+      const dotted = haystack.match(dottedVersionRegex)
+      if (dotted) {
+        const version = dotted[0]
+        return { date: new Date(item.date * 1000), version }
+      }
+      const short = haystack.match(shortVersionRegex)
+      if (short) {
+        const version = short[0]
+        return { date: new Date(item.date * 1000), version }
+      }
+    }
+    return null
+  }, [steamNews])
+
   const [now, setNow] = useState<Date>(new Date())
 
   useEffect(() => {
@@ -41,6 +62,7 @@ export const UpdateCounters = () => {
   // const multiBreakdown = multiDate ? getDurationBreakdown(multiDate, now) : null
   const manualBreakdown = manualDate ? getDurationBreakdown(manualDate, now) : null
   const earlyAccessBreakdown = earlyAccessDate ? getDurationBreakdown(earlyAccessDate, now) : null
+  const buildBreakdown = latestBuildInfo?.date ? getDurationBreakdown(latestBuildInfo.date, now) : null
 
   if (isPending || (latestBreakdown == null )) {
     return <CountersSkeleton />
@@ -50,7 +72,7 @@ export const UpdateCounters = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card className="bg-primary text-primary-foreground border-transparent shadow-xl">
         <CardHeader>
-          <CardTitle className="text-xl md:text-2xl">Since the latest update</CardTitle>
+          <CardTitle className="text-xl md:text-2xl">Since the latest news</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-primary-foreground/10 rounded-xl px-6 py-5 flex items-center justify-between">
@@ -69,6 +91,8 @@ export const UpdateCounters = () => {
           </div>
         </CardContent>
       </Card>
+
+      
 
       {/* {multiDate ? (
         <Card className="border-green-600">
@@ -110,7 +134,28 @@ export const UpdateCounters = () => {
           </CardContent>
         </Card>
       {/* )} */}
-      <div/>
+      {latestBuildInfo && buildBreakdown && (
+        <Card className=" border-primary/50 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-xl md:text-2xl">Since the latest build {latestBuildInfo?.version ? `(${latestBuildInfo.version})` : ''}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between">
+              <Stat value={buildBreakdown?.days ?? 0} label="Days" />
+              <Stat value={buildBreakdown?.hours ?? 0} label="Hours" />
+              <Stat value={buildBreakdown?.minutes ?? 0} label="Minutes" />
+              <Stat value={buildBreakdown?.seconds ?? 0} label="Seconds" />
+            </div>
+            <div className="flex justify-between">
+              <p className=" text-sm">
+                {latestBuildInfo.date
+                  ? `Released on: ${formatNewsDate(latestBuildInfo.date.getTime() / 1000)}`
+                  : 'No build detected'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl md:text-2xl">Since the release of Early Access</CardTitle>
