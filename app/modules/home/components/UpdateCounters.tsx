@@ -64,7 +64,7 @@ export const UpdateCounters = () => {
   const earlyAccessBreakdown = earlyAccessDate ? getDurationBreakdown(earlyAccessDate, now) : null
   const buildBreakdown = latestBuildInfo?.date ? getDurationBreakdown(latestBuildInfo.date, now) : null
 
-  if (isPending || (latestBreakdown == null )) {
+  if (isPending || (latestBreakdown == null)) {
     return <CountersSkeleton />
   }
 
@@ -92,7 +92,7 @@ export const UpdateCounters = () => {
         </CardContent>
       </Card>
 
-      
+
 
       {/* {multiDate ? (
         <Card className="border-green-600">
@@ -112,27 +112,27 @@ export const UpdateCounters = () => {
           </CardContent>
         </Card>
       ) : ( */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl md:text-2xl">Since the release of version BETA 42 and NO MULTIPLAYER</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between">
-              {((manualBreakdown?.years ?? 0) > 0) && (
-                <Stat value={manualBreakdown?.years ?? 0} label="Years" />
-              )}
-              <Stat value={manualBreakdown?.days ?? 0} label="Days" />
-              <Stat value={manualBreakdown?.hours ?? 0} label="Hours" />
-              <Stat value={manualBreakdown?.minutes ?? 0} label="Minutes" />
-              <Stat value={manualBreakdown?.seconds ?? 0} label="Seconds" />
-            </div>
-            <p className="text-sm">
-              {manualDate
-                ? `Release date: ${formatNewsDate(manualDate.getTime() / 1000)}`
-                : "No date found"}
-            </p>
-          </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl md:text-2xl">Since the release of version BETA 42 WITH MULTIPLAYER</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-muted rounded-xl px-6 py-5 flex items-center justify-between border-green-600">
+            {((manualBreakdown?.years ?? 0) > 0) && (
+              <Stat value={manualBreakdown?.years ?? 0} label="Years" />
+            )}
+            <Stat value={manualBreakdown?.days ?? 0} label="Days" />
+            <Stat value={manualBreakdown?.hours ?? 0} label="Hours" />
+            <Stat value={manualBreakdown?.minutes ?? 0} label="Minutes" />
+            <Stat value={manualBreakdown?.seconds ?? 0} label="Seconds" />
+          </div>
+          <p className="text-sm">
+            {manualDate
+              ? `Release date: ${formatNewsDate(manualDate.getTime() / 1000)}`
+              : "No date found"}
+          </p>
+        </CardContent>
+      </Card>
       {/* )} */}
       {latestBuildInfo && buildBreakdown && (
         <Card className=" border-primary/50 shadow-xl">
